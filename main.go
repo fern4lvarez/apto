@@ -10,10 +10,6 @@ import (
 	"github.com/fern4lvarez/apto/apto"
 )
 
-var (
-	output string
-)
-
 func main() {
 	if l := len(os.Args); l == 1 {
 		log.Println("Hello apto")
@@ -26,7 +22,6 @@ func main() {
 				log.Println(err)
 				return
 			}
-			log.Println("Install output:", output)
 		default:
 			log.Println("Hello", first)
 		}
