@@ -28,13 +28,13 @@ func NewAptofile(path string) (*Aptofile, error) {
 func (aptofile *Aptofile) SetLocation(path string) error {
 	if path == "" {
 		aptofile.Location = home
-	} else {
-		_, err := os.Stat(path)
-		if err != nil {
-			return err
-		}
-		aptofile.Location = path
+		return nil
 	}
+
+	if _, err := os.Stat(path); err != nil {
+		return err
+	}
+	aptofile.Location = path
 	return nil
 }
 
