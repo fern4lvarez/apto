@@ -38,6 +38,10 @@ func (aptofile *Aptofile) SetLocation(path string) error {
 	return nil
 }
 
+func (apto *Aptofile) Read() error {
+	return nil
+}
+
 func Bundle(args []string) {
 	fmt.Println("Bundle!!")
 }

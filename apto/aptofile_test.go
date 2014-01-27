@@ -1,6 +1,8 @@
 package apto
 
 import (
+	"io/ioutil"
+	"os"
 	"reflect"
 	"testing"
 )
@@ -48,6 +50,34 @@ func TestAptofileSetLocation(t *testing.T) {
 	}
 	if location := aptofile.Location; location != expectedLocation {
 		t.Errorf(msg, spec, expectedLocation, location)
+	}
+}
+
+func TestAptofileRead(t *testing.T) {
+	spec := `Should complete all Aptofile after reading
+file with two install commands`
+
+	// Setup
+	af := []byte("install vim\ninstall gnomine\n")
+	ioutil.WriteFile("Aptofile", af, 0644)
+	defer os.Remove("Aptofile")
+
+	command1, _ := NewCommand(true,
+		"apt-get",
+		"install",
+		[]string{"vim"},
+		[]string{"-y"})
+	command2, _ := NewCommand(true,
+		"apt-get",
+		"install",
+		[]string{"gnomine"},
+		[]string{"-y"})
+	expectedAptofile, _ := NewAptofile("Aptofile")
+	expectedAptofile.Commands = []*Command{command1, command2}
+	aptofile, _ := NewAptofile("Aptofile")
+
+	if err := aptofile.Read(); err != nil {
+		t.Errorf(msg, spec, nil, err)
 	}
 }
 
