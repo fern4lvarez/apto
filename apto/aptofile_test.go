@@ -57,7 +57,6 @@ func TestAptofileRead(t *testing.T) {
 	spec := `Should complete all Aptofile after reading
 file with two install commands`
 
-	// Setup
 	af := []byte("install vim\ninstall gnomine\n")
 	ioutil.WriteFile("Aptofile", af, 0644)
 	defer os.Remove("Aptofile")
@@ -79,6 +78,10 @@ file with two install commands`
 	if err := aptofile.Read(); err != nil {
 		t.Errorf(msg, spec, nil, err)
 	}
+
+	//if !reflect.DeepEqual(expectedAptofile, aptofile) {
+	//	t.Errorf(msg, spec, expectedAptofile, aptofile)
+	//}
 }
 
 func TestAptofileSetLocationError(t *testing.T) {

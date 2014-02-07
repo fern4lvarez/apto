@@ -1,6 +1,7 @@
 package apto
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 )
@@ -38,7 +39,21 @@ func (aptofile *Aptofile) SetLocation(path string) error {
 	return nil
 }
 
-func (apto *Aptofile) Read() error {
+func (aptofile *Aptofile) Read() error {
+	file, err := os.Open(aptofile.Location)
+	if err != nil {
+		return err
+	}
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
