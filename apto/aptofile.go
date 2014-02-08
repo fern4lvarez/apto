@@ -4,12 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 var (
 	home = os.Getenv("HOME")
 )
 
+// Aptofile contains all parsed data from text file
 type Aptofile struct {
 	Commands []*Command
 	Queue    chan *Command
@@ -17,6 +19,7 @@ type Aptofile struct {
 	Location string
 }
 
+// NewAptofile creates a fresh Aptofile given a path
 func NewAptofile(path string) (*Aptofile, error) {
 	aptofile := new(Aptofile)
 	err := aptofile.SetLocation(path)
@@ -26,6 +29,7 @@ func NewAptofile(path string) (*Aptofile, error) {
 	return aptofile, nil
 }
 
+// SetLocation sets location of an Aptofile given a path
 func (aptofile *Aptofile) SetLocation(path string) error {
 	if path == "" {
 		aptofile.Location = home
@@ -39,20 +43,35 @@ func (aptofile *Aptofile) SetLocation(path string) error {
 	return nil
 }
 
+// Read reads and parses an Aptofile
 func (aptofile *Aptofile) Read() error {
 	file, err := os.Open(aptofile.Location)
 	if err != nil {
 		return err
 	}
 
+	commands := []*Command{}
+
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		fmt.Println(scanner.Text())
+		command := NewCommand()
+		line := strings.TrimSpace(scanner.Text())
+		args := strings.Split(line, " ")
+		switch cmd := args[0]; cmd {
+		case "install":
+			command.Install(args[1:], []string{})
+		default:
+			continue
+		}
+
+		commands = append(commands, command)
 	}
 
 	if err := scanner.Err(); err != nil {
 		return err
 	}
+
+	aptofile.Commands = commands
 
 	return nil
 }

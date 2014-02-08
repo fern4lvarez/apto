@@ -67,7 +67,7 @@ func TestCommandInstall(t *testing.T) {
 
 	if err := command.Install(
 		[]string{"git-essentials"},
-		[]string{"-y"}); err != nil {
+		[]string{}); err != nil {
 		t.Errorf(msg, spec, err, nil)
 	} else if !reflect.DeepEqual(expectedCommand, *command) {
 		t.Errorf(msg, spec, expectedCommand, *command)
@@ -81,7 +81,7 @@ func TestCommandInstallError(t *testing.T) {
 
 	if err := command.Install(
 		[]string{},
-		[]string{"-y"}); err == nil {
+		[]string{}); err == nil {
 		t.Errorf(msg, spec)
 	} else if !reflect.DeepEqual(expectedErr, err) {
 		t.Errorf(msg, spec, expectedErr, err)

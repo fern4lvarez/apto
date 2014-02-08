@@ -11,10 +11,9 @@ func Install(args []string) error {
 
 func installCommand(args []string) (*Command, error) {
 	pkgs := args[2:]
-	options := []string{"-y"}
 
 	command := NewCommand()
-	err := command.Install(pkgs, options)
+	err := command.Install(pkgs, []string{})
 	if err != nil {
 		return nil, err
 	}

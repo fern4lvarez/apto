@@ -46,6 +46,8 @@ func (command *Command) Install(pkgs []string, options []string) error {
 		return errors.New("No given pkgs to Install.")
 	}
 
+	options = append(options, "-y")
+
 	command.Create(true,
 		"apt-get",
 		"install",

@@ -79,11 +79,26 @@ file with two install commands`
 
 	if err := aptofile.Read(); err != nil {
 		t.Errorf(msg, spec, nil, err)
+	} else if !reflect.DeepEqual(expectedAptofile, aptofile) {
+		t.Errorf(msg, spec, expectedAptofile, aptofile)
 	}
 
-	//if !reflect.DeepEqual(expectedAptofile, aptofile) {
-	//	t.Errorf(msg, spec, expectedAptofile, aptofile)
-	//}
+	spec = `Should return an Aptofile with an empty list of commands
+    given empty lines or wrong commands`
+
+	af = []byte("\n\n\n\nwrong command\n\n\nevil command\n")
+	ioutil.WriteFile("Aptofile2", af, 0644)
+	defer os.Remove("Aptofile2")
+
+	expectedAptofile, _ = NewAptofile("Aptofile2")
+	expectedAptofile.Commands = []*Command{}
+	aptofile, _ = NewAptofile("Aptofile2")
+
+	if err := aptofile.Read(); err != nil {
+		t.Errorf(msg, spec, nil, err)
+	} else if !reflect.DeepEqual(expectedAptofile, aptofile) {
+		t.Errorf(msg, spec, expectedAptofile, aptofile)
+	}
 }
 
 func TestAptofileSetLocationError(t *testing.T) {
