@@ -61,16 +61,18 @@ file with two install commands`
 	ioutil.WriteFile("Aptofile", af, 0644)
 	defer os.Remove("Aptofile")
 
-	command1, _ := NewCommand(true,
-		"apt-get",
-		"install",
-		[]string{"vim"},
-		[]string{"-y"})
-	command2, _ := NewCommand(true,
-		"apt-get",
-		"install",
-		[]string{"gnomine"},
-		[]string{"-y"})
+	command1 := &Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "install",
+		Pkgs:    []string{"vim"},
+		Options: []string{"-y"},
+	}
+	command2 := &Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "install",
+		Pkgs:    []string{"gnomine"},
+		Options: []string{"-y"},
+	}
 	expectedAptofile, _ := NewAptofile("Aptofile")
 	expectedAptofile.Commands = []*Command{command1, command2}
 	aptofile, _ := NewAptofile("Aptofile")

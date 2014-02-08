@@ -18,15 +18,41 @@ type Command struct {
 	Options []string
 }
 
-// New creates a new *Command
-func NewCommand(sudo bool, tool string, cmd string, pkgs []string, options []string) (*Command, error) {
+// NewCommand creates new, empty *Command
+func NewCommand() *Command {
+	return new(Command)
+}
+
+// Create *Command given arguments
+func (command *Command) Create(sudo bool, tool string, cmd string, pkgs []string, options []string) error {
 	if tool == "" {
-		return nil, errors.New("Tool is empty.")
+		return errors.New("Tool is empty.")
 	} else if cmd == "" {
-		return nil, errors.New("Cmd is empty.")
+		return errors.New("Cmd is empty.")
 	}
 
-	return &Command{sudo, tool, cmd, pkgs, options}, nil
+	command.Sudo = sudo
+	command.Tool = tool
+	command.Cmd = cmd
+	command.Pkgs = pkgs
+	command.Options = options
+
+	return nil
+}
+
+// Install creates a apt-get install command given packages and options
+func (command *Command) Install(pkgs []string, options []string) error {
+	if len(pkgs) == 0 {
+		return errors.New("No given pkgs to Install.")
+	}
+
+	command.Create(true,
+		"apt-get",
+		"install",
+		pkgs,
+		options)
+
+	return nil
 }
 
 // String ressembles Command into a valid bash command

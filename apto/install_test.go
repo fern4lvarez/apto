@@ -1,6 +1,7 @@
 package apto
 
 import (
+	"errors"
 	"testing"
 )
 
@@ -39,8 +40,9 @@ func TestInstallCommand(t *testing.T) {
 func TestInstallCommandError(t *testing.T) {
 	spec := "Should return an Error when no packages are given"
 	args := []string{"apto", "install"}
+	expectedErr := errors.New("No given pkgs to Install.")
 
 	if _, err := installCommand(args); err == nil {
-		t.Errorf(msg, spec, err, nil)
+		t.Errorf(msg, spec, expectedErr, err)
 	}
 }

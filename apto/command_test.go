@@ -11,8 +11,9 @@ var (
 	msg = "%v. Expects %v, returns %v"
 )
 
-func TestNewCommand(t *testing.T) {
-	spec := "Should return a new Command"
+func TestCommandCreate(t *testing.T) {
+	spec := "Should create a Command given all arguments"
+	command := NewCommand()
 	expectedCommand := Command{Sudo: true,
 		Tool:    "apt-get",
 		Cmd:     "install",
@@ -20,7 +21,7 @@ func TestNewCommand(t *testing.T) {
 		Options: []string{},
 	}
 
-	if command, err := NewCommand(true,
+	if err := command.Create(true,
 		"apt-get",
 		"install",
 		[]string{"git-essentials"},
@@ -31,10 +32,11 @@ func TestNewCommand(t *testing.T) {
 	}
 }
 
-func TestNewCommandError(t *testing.T) {
+func TestCommandCreateError(t *testing.T) {
 	spec := "Should return error when Tool is empty"
+	command := NewCommand()
 	expectedErr := errors.New("Tool is empty.")
-	if _, err := NewCommand(true,
+	if err := command.Create(true,
 		"",
 		"install",
 		[]string{"git-essentials"},
@@ -44,14 +46,46 @@ func TestNewCommandError(t *testing.T) {
 
 	spec = "Should return error when Cmd is empty"
 	expectedErr = errors.New("Cmd is empty.")
-	if _, err := NewCommand(true,
+	if err := command.Create(true,
 		"apt-get",
 		"",
 		[]string{"git-essentials"},
 		[]string{}); !reflect.DeepEqual(expectedErr, err) {
 		t.Errorf(msg, spec, expectedErr, err)
 	}
+}
 
+func TestCommandInstall(t *testing.T) {
+	spec := "Should create Install command given pkgs and options"
+	command := NewCommand()
+	expectedCommand := Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "install",
+		Pkgs:    []string{"git-essentials"},
+		Options: []string{"-y"},
+	}
+
+	if err := command.Install(
+		[]string{"git-essentials"},
+		[]string{"-y"}); err != nil {
+		t.Errorf(msg, spec, err, nil)
+	} else if !reflect.DeepEqual(expectedCommand, *command) {
+		t.Errorf(msg, spec, expectedCommand, *command)
+	}
+}
+
+func TestCommandInstallError(t *testing.T) {
+	spec := "Should return error when not given pkgs"
+	command := NewCommand()
+	expectedErr := errors.New("No given pkgs to Install.")
+
+	if err := command.Install(
+		[]string{},
+		[]string{"-y"}); err == nil {
+		t.Errorf(msg, spec)
+	} else if !reflect.DeepEqual(expectedErr, err) {
+		t.Errorf(msg, spec, expectedErr, err)
+	}
 }
 
 func TestCommandString(t *testing.T) {
@@ -77,8 +111,9 @@ func TestCommandString(t *testing.T) {
 	}
 }
 
-func ExampleNewCommand() {
-	command, err := NewCommand(true,
+func ExampleCommandNewCommand() {
+	command := NewCommand()
+	err := command.Create(true,
 		"apt-get",
 		"install",
 		[]string{"git-essentials"},
