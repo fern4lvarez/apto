@@ -55,17 +55,10 @@ func (aptofile *Aptofile) Read() error {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		command := NewCommand()
-		line := strings.TrimSpace(scanner.Text())
-		args := strings.Split(line, " ")
-		switch cmd := args[0]; cmd {
-		case "install":
-			command.Install(args[1:], []string{})
-		default:
-			continue
+		command := handleLine(scanner.Text(), NewCommand())
+		if command != nil {
+			commands = append(commands, command)
 		}
-
-		commands = append(commands, command)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -75,6 +68,19 @@ func (aptofile *Aptofile) Read() error {
 	aptofile.Commands = commands
 
 	return nil
+}
+
+func handleLine(line string, command *Command) *Command {
+	line = strings.TrimSpace(line)
+	args := strings.Split(line, " ")
+	switch cmd := args[0]; cmd {
+	case "install":
+		command.Install(args[1:], []string{})
+	default:
+		return nil
+	}
+
+	return command
 }
 
 func Bundle(args []string) {

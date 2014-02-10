@@ -54,6 +54,16 @@ func TestAptofileSetLocation(t *testing.T) {
 	}
 }
 
+func TestAptofileSetLocationError(t *testing.T) {
+	spec := "Should return error when given path does not exist"
+	aptofile := &Aptofile{}
+	path := "foobar"
+
+	if err := aptofile.SetLocation(path); err == nil {
+		t.Errorf(msg, spec, err, nil)
+	}
+}
+
 func TestAptofileRead(t *testing.T) {
 	spec := `Should complete all Aptofile after reading
 file with two install commands`
@@ -102,12 +112,29 @@ file with two install commands`
 	}
 }
 
-func TestAptofileSetLocationError(t *testing.T) {
-	spec := "Should return error when given path does not exist"
-	aptofile := &Aptofile{}
-	path := "foobar"
+func TestHandleLine(t *testing.T) {
+	spec := "Should return Install Command given a install line"
+	expectedCommand := &Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "install",
+		Pkgs:    []string{"vim"},
+		Options: []string{"-y"},
+	}
 
-	if err := aptofile.SetLocation(path); err == nil {
-		t.Errorf(msg, spec, err, nil)
+	line := "install vim"
+	command := NewCommand()
+
+	if command = handleLine(line, command); !reflect.DeepEqual(expectedCommand, command) {
+		t.Errorf(msg, spec, expectedCommand, command)
+	}
+
+	spec = "Should return nil given a wrong command"
+	expectedCommand = nil
+
+	line = "wrong command"
+	command = NewCommand()
+
+	if command = handleLine(line, command); expectedCommand != command {
+		t.Errorf(msg, spec, expectedCommand, command)
 	}
 }
