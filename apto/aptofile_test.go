@@ -112,6 +112,19 @@ file with two install commands`
 	}
 }
 
+func TestAptofileReadError(t *testing.T) {
+	spec := `Should return error if Aptofile's location is not existing`
+
+	ioutil.WriteFile("Aptofile", []byte("foo"), 0644)
+	expectedErr := "no such file or directory"
+	aptofile, _ := NewAptofile("Aptofile")
+
+	os.Remove("Aptofile")
+	if err := aptofile.Read(); err == nil {
+		t.Errorf(msg, spec, expectedErr, err)
+	}
+}
+
 func TestHandleLine(t *testing.T) {
 	spec := "Should return Install Command given a install line"
 	expectedCommand := &Command{Sudo: true,
