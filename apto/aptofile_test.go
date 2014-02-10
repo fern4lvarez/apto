@@ -3,6 +3,7 @@ package apto
 import (
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"reflect"
 	"testing"
 )
@@ -10,7 +11,7 @@ import (
 func TestNewAptofile(t *testing.T) {
 	spec := "Should create an Aptofile with default location"
 	expectedAptofile := new(Aptofile)
-	expectedAptofile.Location = home
+	expectedAptofile.Location = filepath.Join(home, "Aptofile")
 
 	if aptofile, err := NewAptofile(""); err != nil {
 		t.Errorf(msg, spec, nil, err)
@@ -29,8 +30,8 @@ func TestNewAptofileError(t *testing.T) {
 }
 
 func TestAptofileSetLocation(t *testing.T) {
-	spec := "Should set $HOME as Aptofile directory when given path is empty"
-	expectedLocation := home
+	spec := "Should set $HOME/Aptofile as Aptofile directory when given path is empty"
+	expectedLocation := filepath.Join(home, "Aptofile")
 	aptofile := &Aptofile{}
 
 	if err := aptofile.SetLocation(""); err != nil {

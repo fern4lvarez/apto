@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -32,7 +33,7 @@ func NewAptofile(path string) (*Aptofile, error) {
 // SetLocation sets location of an Aptofile given a path
 func (aptofile *Aptofile) SetLocation(path string) error {
 	if path == "" {
-		aptofile.Location = home
+		aptofile.Location = filepath.Join(home, "Aptofile")
 		return nil
 	}
 
