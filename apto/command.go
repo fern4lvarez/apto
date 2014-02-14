@@ -27,7 +27,9 @@ func NewCommand() *Command {
 func (command *Command) Create(sudo bool, tool string, cmd string, pkgs []string, options []string) error {
 	if tool == "" {
 		return errors.New("Tool is empty.")
-	} else if cmd == "" {
+	}
+
+	if cmd == "" {
 		return errors.New("Cmd is empty.")
 	}
 
@@ -80,4 +82,39 @@ func (command *Command) String() string {
 	}
 
 	return strings.TrimSpace(buf.String())
+}
+
+// handleLine turns a Command given a string line
+func (command *Command) handleLine(line string) {
+	line = strings.TrimSpace(line)
+	args := strings.Split(line, " ")
+
+	switch cmd := args[0]; cmd {
+	case "install":
+		command.Install(args[1:], []string{})
+	default:
+		command = NewCommand()
+	}
+}
+
+// appendTo a given list of commands if command is empty
+func (command *Command) appendTo(commands []*Command) []*Command {
+	if command.isValid() {
+		return append(commands, command)
+	}
+
+	return commands
+}
+
+// isValid checks if command is valid for using purposes
+func (command *Command) isValid() bool {
+	if command == nil {
+		return false
+	}
+
+	if command.Tool == "" || command.Cmd == "" {
+		return false
+	}
+
+	return true
 }

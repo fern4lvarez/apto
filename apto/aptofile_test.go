@@ -90,7 +90,9 @@ file with two install commands`
 
 	if err := aptofile.Read(); err != nil {
 		t.Errorf(msg, spec, nil, err)
-	} else if !reflect.DeepEqual(expectedAptofile, aptofile) {
+	}
+
+	if !reflect.DeepEqual(expectedAptofile, aptofile) {
 		t.Errorf(msg, spec, expectedAptofile, aptofile)
 	}
 
@@ -107,7 +109,9 @@ file with two install commands`
 
 	if err := aptofile.Read(); err != nil {
 		t.Errorf(msg, spec, nil, err)
-	} else if !reflect.DeepEqual(expectedAptofile, aptofile) {
+	}
+
+	if !reflect.DeepEqual(expectedAptofile, aptofile) {
 		t.Errorf(msg, spec, expectedAptofile, aptofile)
 	}
 }

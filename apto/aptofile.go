@@ -55,9 +55,9 @@ func (aptofile *Aptofile) Read() error {
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		if command := handleLine(scanner.Text(), NewCommand()); command != nil {
-			commands = append(commands, command)
-		}
+		command := NewCommand()
+		command.handleLine(scanner.Text())
+		commands = command.appendTo(commands)
 	}
 
 	if err := scanner.Err(); err != nil {

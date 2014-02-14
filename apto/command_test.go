@@ -27,7 +27,9 @@ func TestCommandCreate(t *testing.T) {
 		[]string{"git-essentials"},
 		[]string{}); err != nil {
 		t.Errorf(msg, spec, nil, err)
-	} else if !reflect.DeepEqual(expectedCommand, *command) {
+	}
+
+	if !reflect.DeepEqual(expectedCommand, *command) {
 		t.Errorf(msg, spec, expectedCommand, *command)
 	}
 }
@@ -69,7 +71,9 @@ func TestCommandInstall(t *testing.T) {
 		[]string{"git-essentials"},
 		[]string{}); err != nil {
 		t.Errorf(msg, spec, err, nil)
-	} else if !reflect.DeepEqual(expectedCommand, *command) {
+	}
+
+	if !reflect.DeepEqual(expectedCommand, *command) {
 		t.Errorf(msg, spec, expectedCommand, *command)
 	}
 }
@@ -108,6 +112,86 @@ func TestCommandString(t *testing.T) {
 
 	if s := command.String(); s != expectedString {
 		t.Errorf(msg, spec, expectedString, s)
+	}
+}
+
+func TestCommandHandleLine(t *testing.T) {
+	spec := "Should change the command according to the given line"
+	expectedCommand := &Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "install",
+		Pkgs:    []string{"git-essentials"},
+		Options: []string{"-y"},
+	}
+	line := "install git-essentials"
+	command := NewCommand()
+	command.handleLine(line)
+
+	if !reflect.DeepEqual(expectedCommand, command) {
+		t.Errorf(msg, spec, expectedCommand, command)
+	}
+}
+
+func TestCommandHandleLineError(t *testing.T) {
+	spec := "Should set command as when not supported command"
+	expectedCommand := NewCommand()
+	line := "wrong command"
+	command := NewCommand()
+	command.handleLine(line)
+
+	if !reflect.DeepEqual(expectedCommand, command) {
+		t.Errorf(msg, spec, expectedCommand, command)
+	}
+}
+
+func TestCommandAppendTo(t *testing.T) {
+	spec := "Should append to given list of commands if valid command"
+	command := &Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "install",
+		Pkgs:    []string{"git-essentials", "vim"},
+		Options: []string{"-y", "-d"},
+	}
+	expectedCommands := command.appendTo([]*Command{})
+
+	if !reflect.DeepEqual(expectedCommands[0], command) {
+		t.Errorf(msg, spec, expectedCommands[0], command)
+	}
+
+	spec = "Should not append to given list if not valid command"
+	command = NewCommand()
+	expectedCommands = command.appendTo(expectedCommands)
+
+	if l := len(expectedCommands); l == 2 {
+		t.Errorf(msg, spec, 1, l)
+	}
+}
+
+func TestCommandIsValid(t *testing.T) {
+	spec := "Should return true given a valid command"
+	command := &Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "install",
+		Pkgs:    []string{"git-essentials", "vim"},
+		Options: []string{"-y", "-d"},
+	}
+
+	if v := command.isValid(); !v {
+		t.Errorf(msg, spec, true, v)
+	}
+
+	spec = "Should return false given a new command"
+	command = NewCommand()
+
+	if v := command.isValid(); v {
+		t.Errorf(msg, spec, false, v)
+	}
+
+	spec = "Should return false given nil"
+	command = nil
+
+	if v := command.isValid(); v {
+		t.Errorf(msg, spec, false, v)
 	}
 }
 
