@@ -22,8 +22,8 @@ func main() {
 				log.Println(err)
 				return
 			}
-		case "bundle":
-			apto.Bundle(os.Args)
+		case "file":
+			apto.File(os.Args)
 		default:
 			log.Println("Hello", first)
 		}

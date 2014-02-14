@@ -2,7 +2,6 @@ package apto
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"path/filepath"
 )
@@ -68,6 +67,16 @@ func (aptofile *Aptofile) Read() error {
 	return nil
 }
 
-func Bundle(args []string) {
-	fmt.Println("Bundle!!")
+func (aptofile *Aptofile) Execute() error {
+	for _, command := range aptofile.Commands {
+		Execute(command)
+	}
+
+	return nil
+}
+
+func File(args []string) {
+	aptofile, _ := NewAptofile("")
+	aptofile.Read()
+	aptofile.Execute()
 }
