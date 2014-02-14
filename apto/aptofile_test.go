@@ -128,30 +128,3 @@ func TestAptofileReadError(t *testing.T) {
 		t.Errorf(msg, spec, expectedErr, err)
 	}
 }
-
-func TestHandleLine(t *testing.T) {
-	spec := "Should return Install Command given a install line"
-	expectedCommand := &Command{Sudo: true,
-		Tool:    "apt-get",
-		Cmd:     "install",
-		Pkgs:    []string{"vim"},
-		Options: []string{"-y"},
-	}
-
-	line := "install vim"
-	command := NewCommand()
-
-	if command = handleLine(line, command); !reflect.DeepEqual(expectedCommand, command) {
-		t.Errorf(msg, spec, expectedCommand, command)
-	}
-
-	spec = "Should return nil given a wrong command"
-	expectedCommand = nil
-
-	line = "wrong command"
-	command = NewCommand()
-
-	if command = handleLine(line, command); expectedCommand != command {
-		t.Errorf(msg, spec, expectedCommand, command)
-	}
-}

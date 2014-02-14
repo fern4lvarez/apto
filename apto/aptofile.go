@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 var (
@@ -67,19 +66,6 @@ func (aptofile *Aptofile) Read() error {
 	aptofile.Commands = commands
 
 	return nil
-}
-
-func handleLine(line string, command *Command) *Command {
-	line = strings.TrimSpace(line)
-	args := strings.Split(line, " ")
-	switch cmd := args[0]; cmd {
-	case "install":
-		command.Install(args[1:], []string{})
-	default:
-		return nil
-	}
-
-	return command
 }
 
 func Bundle(args []string) {
