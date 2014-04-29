@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	home = os.Getenv("HOME")
+	home        = os.Getenv("HOME")
+	current_dir = os.Getenv("PWD")
 )
 
 // Aptofile contains all parsed data from text file
@@ -35,10 +36,12 @@ func (aptofile *Aptofile) SetLocation(path string) error {
 		return nil
 	}
 
-	if _, err := os.Stat(path); err != nil {
+	location := filepath.Join(path, "Aptofile")
+	if _, err := os.Stat(location); err != nil {
 		return err
 	}
-	aptofile.Location = path
+
+	aptofile.Location = location
 	return nil
 }
 
@@ -67,6 +70,7 @@ func (aptofile *Aptofile) Read() error {
 	return nil
 }
 
+// Execute executes the aptofile command by command
 func (aptofile *Aptofile) Execute() error {
 	for _, command := range aptofile.Commands {
 		Execute(command)
@@ -75,6 +79,7 @@ func (aptofile *Aptofile) Execute() error {
 	return nil
 }
 
+// File reads and executes an aptofile
 func File(args []string) {
 	aptofile, _ := NewAptofile("")
 	aptofile.Read()

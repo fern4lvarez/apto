@@ -43,8 +43,8 @@ func TestAptofileSetLocation(t *testing.T) {
 
 	spec = "Should set as Aptofile directory the given path"
 	aptofile.Location = ""
-	expectedLocation = home
-	path := expectedLocation
+	path := home
+	expectedLocation = filepath.Join(path, "Aptofile")
 
 	if err := aptofile.SetLocation(path); err != nil {
 		t.Errorf(msg, spec, nil, err)
@@ -70,7 +70,6 @@ file with two install commands`
 
 	af := []byte("install vim\ninstall gnomine\n")
 	ioutil.WriteFile("Aptofile", af, 0644)
-	defer os.Remove("Aptofile")
 
 	command1 := &Command{Sudo: true,
 		Tool:    "apt-get",
@@ -84,9 +83,9 @@ file with two install commands`
 		Pkgs:    []string{"gnomine"},
 		Options: []string{"-y"},
 	}
-	expectedAptofile, _ := NewAptofile("Aptofile")
+	expectedAptofile, _ := NewAptofile(current_dir)
 	expectedAptofile.Commands = []*Command{command1, command2}
-	aptofile, _ := NewAptofile("Aptofile")
+	aptofile, _ := NewAptofile(current_dir)
 
 	if err := aptofile.Read(); err != nil {
 		t.Errorf(msg, spec, nil, err)
@@ -96,16 +95,18 @@ file with two install commands`
 		t.Errorf(msg, spec, expectedAptofile, aptofile)
 	}
 
+	os.Remove("Aptofile")
+
 	spec = `Should return an Aptofile with an empty list of commands
     given empty lines or wrong commands`
 
 	af = []byte("\n\n\n\nwrong command\n\n\nevil command\n")
-	ioutil.WriteFile("Aptofile2", af, 0644)
-	defer os.Remove("Aptofile2")
+	ioutil.WriteFile("Aptofile", af, 0644)
+	defer os.Remove("Aptofile")
 
-	expectedAptofile, _ = NewAptofile("Aptofile2")
+	expectedAptofile, _ = NewAptofile(current_dir)
 	expectedAptofile.Commands = []*Command{}
-	aptofile, _ = NewAptofile("Aptofile2")
+	aptofile, _ = NewAptofile(current_dir)
 
 	if err := aptofile.Read(); err != nil {
 		t.Errorf(msg, spec, nil, err)
@@ -121,7 +122,7 @@ func TestAptofileReadError(t *testing.T) {
 
 	ioutil.WriteFile("Aptofile", []byte("foo"), 0644)
 	expectedErr := "no such file or directory"
-	aptofile, _ := NewAptofile("Aptofile")
+	aptofile, _ := NewAptofile(current_dir)
 
 	os.Remove("Aptofile")
 	if err := aptofile.Read(); err == nil {

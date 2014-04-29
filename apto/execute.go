@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Execute executes Command
 func Execute(command *Command) error {
 	c := strings.Split(command.String(), " ")
 	cmd := exec.Command(c[0], c[1:]...)
