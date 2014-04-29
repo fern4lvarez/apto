@@ -32,7 +32,7 @@ func NewAptofile(path string) (*Aptofile, error) {
 // SetLocation sets location of an Aptofile given a path
 func (aptofile *Aptofile) SetLocation(path string) error {
 	if path == "" {
-		aptofile.Location = filepath.Join(home, "Aptofile")
+		aptofile.Location = filepath.Join(current_dir, "Aptofile")
 		return nil
 	}
 
