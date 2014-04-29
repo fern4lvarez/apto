@@ -92,6 +92,38 @@ func TestCommandInstallError(t *testing.T) {
 	}
 }
 
+func TestCommandEcho(t *testing.T) {
+	spec := "Should create echo command given a text"
+	text := "This is a comment"
+	command := NewCommand()
+	expectedCommand := Command{Sudo: false,
+		Tool:    "echo",
+		Cmd:     text,
+		Pkgs:    []string{},
+		Options: []string{},
+	}
+
+	if err := command.Echo(text); err != nil {
+		t.Errorf(msg, spec, err, nil)
+	}
+
+	if !reflect.DeepEqual(expectedCommand, *command) {
+		t.Errorf(msg, spec, expectedCommand, *command)
+	}
+}
+
+func TestCommandEchoError(t *testing.T) {
+	spec := "Should return error when text is empty"
+	command := NewCommand()
+	expectedErr := errors.New("Empty text.")
+
+	if err := command.Echo(""); err == nil {
+		t.Errorf(msg, spec)
+	} else if !reflect.DeepEqual(expectedErr, err) {
+		t.Errorf(msg, spec, expectedErr, err)
+	}
+}
+
 func TestCommandString(t *testing.T) {
 	spec := "Should print Command with Sudo into a valid bash sudo command"
 	command := &Command{Sudo: true,
@@ -116,15 +148,30 @@ func TestCommandString(t *testing.T) {
 }
 
 func TestCommandHandleLine(t *testing.T) {
-	spec := "Should change the command according to the given line"
-	expectedCommand := &Command{Sudo: true,
+	spec := "Should convert a Echo command given comment"
+	expectedCommand := &Command{Sudo: false,
+		Tool:    "echo",
+		Cmd:     "this is a comment",
+		Pkgs:    []string{},
+		Options: []string{},
+	}
+	line := "// this is a comment"
+	command := NewCommand()
+	command.handleLine(line)
+
+	if !reflect.DeepEqual(expectedCommand, command) {
+		t.Errorf(msg, spec, expectedCommand, command)
+	}
+
+	spec = "Should convert a Install command given a install line"
+	expectedCommand = &Command{Sudo: true,
 		Tool:    "apt-get",
 		Cmd:     "install",
 		Pkgs:    []string{"git-essentials"},
 		Options: []string{"-y"},
 	}
-	line := "install git-essentials"
-	command := NewCommand()
+	line = "install git-essentials"
+	command = NewCommand()
 	command.handleLine(line)
 
 	if !reflect.DeepEqual(expectedCommand, command) {
@@ -133,10 +180,20 @@ func TestCommandHandleLine(t *testing.T) {
 }
 
 func TestCommandHandleLineError(t *testing.T) {
-	spec := "Should set command as when not supported command"
+	spec := "Should set an Empty command given an empty line"
 	expectedCommand := NewCommand()
-	line := "wrong command"
+	line := ""
 	command := NewCommand()
+	command.handleLine(line)
+
+	if !reflect.DeepEqual(expectedCommand, command) {
+		t.Errorf(msg, spec, expectedCommand, command)
+	}
+
+	spec = "Should set an empty Command given a supported command"
+	expectedCommand = NewCommand()
+	line = "wrong command"
+	command = NewCommand()
 	command.handleLine(line)
 
 	if !reflect.DeepEqual(expectedCommand, command) {

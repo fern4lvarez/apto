@@ -59,6 +59,21 @@ func (command *Command) Install(pkgs []string, options []string) error {
 	return nil
 }
 
+// Echo creates a echo command given a text
+func (command *Command) Echo(text string) error {
+	if text == "" {
+		return errors.New("Empty text.")
+	}
+
+	command.Create(false,
+		"echo",
+		text,
+		[]string{},
+		[]string{})
+
+	return nil
+}
+
 // String ressembles Command into a valid bash command
 func (command *Command) String() string {
 	var buf bytes.Buffer
@@ -87,6 +102,16 @@ func (command *Command) String() string {
 // handleLine turns a Command given a string line
 func (command *Command) handleLine(line string) {
 	line = strings.TrimSpace(line)
+
+	if line == "" {
+		return
+	}
+
+	if strings.HasPrefix(line, "//") {
+		command.Echo(strings.Trim(line, "/ "))
+		return
+	}
+
 	args := strings.Split(line, " ")
 
 	switch cmd := args[0]; cmd {
