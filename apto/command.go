@@ -6,6 +6,8 @@ package apto
 import (
 	"bytes"
 	"errors"
+	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -40,6 +42,16 @@ func (command *Command) Create(sudo bool, tool string, cmd string, pkgs []string
 	command.Options = options
 
 	return nil
+}
+
+// Execute executes Command
+func (command *Command) Execute() error {
+	c := strings.Split(command.String(), " ")
+	cmd := exec.Command(c[0], c[1:]...)
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
 
 // Install creates a apt-get install command given packages and options

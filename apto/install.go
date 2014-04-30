@@ -6,7 +6,7 @@ func Install(args []string) error {
 		return err
 	}
 
-	return Execute(command)
+	return command.Execute()
 }
 
 func installCommand(args []string) (*Command, error) {

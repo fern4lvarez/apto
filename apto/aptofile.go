@@ -73,7 +73,7 @@ func (aptofile *Aptofile) Read() error {
 // Execute executes the aptofile command by command
 func (aptofile *Aptofile) Execute() error {
 	for _, command := range aptofile.Commands {
-		Execute(command)
+		command.Execute()
 	}
 
 	return nil
