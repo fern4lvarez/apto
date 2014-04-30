@@ -59,6 +59,21 @@ func (command *Command) Install(pkgs []string, options []string) error {
 	return nil
 }
 
+// Shell creates a shell command given instructions
+func (command *Command) Shell(instructions []string) error {
+	if len(instructions) == 0 {
+		return errors.New("No given instructions.")
+	}
+
+	command.Create(false,
+		instructions[0],
+		instructions[1],
+		instructions[2:],
+		[]string{})
+
+	return nil
+}
+
 // Echo creates a echo command given a text
 func (command *Command) Echo(text string) error {
 	if text == "" {
@@ -117,6 +132,8 @@ func (command *Command) handleLine(line string) {
 	switch cmd := args[0]; cmd {
 	case "install":
 		command.Install(args[1:], []string{})
+	case "sh":
+		command.Shell(args[1:])
 	default:
 		command = NewCommand()
 	}

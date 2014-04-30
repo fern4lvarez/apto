@@ -92,6 +92,38 @@ func TestCommandInstallError(t *testing.T) {
 	}
 }
 
+func TestCommandShell(t *testing.T) {
+	spec := "Should create shell command given instructions"
+	instructions := []string{"bundle", "install", "--verbose"}
+	command := NewCommand()
+	expectedCommand := Command{Sudo: false,
+		Tool:    "bundle",
+		Cmd:     "install",
+		Pkgs:    []string{"--verbose"},
+		Options: []string{},
+	}
+
+	if err := command.Shell(instructions); err != nil {
+		t.Errorf(msg, spec, err, nil)
+	}
+
+	if !reflect.DeepEqual(expectedCommand, *command) {
+		t.Errorf(msg, spec, expectedCommand, *command)
+	}
+}
+
+func TestCommandShellError(t *testing.T) {
+	spec := "Should return error when instructions are empty"
+	command := NewCommand()
+	expectedErr := errors.New("No given instructions.")
+
+	if err := command.Shell([]string{}); err == nil {
+		t.Errorf(msg, spec)
+	} else if !reflect.DeepEqual(expectedErr, err) {
+		t.Errorf(msg, spec, expectedErr, err)
+	}
+}
+
 func TestCommandEcho(t *testing.T) {
 	spec := "Should create echo command given a text"
 	text := "This is a comment"
@@ -171,6 +203,21 @@ func TestCommandHandleLine(t *testing.T) {
 		Options: []string{"-y"},
 	}
 	line = "install git-essentials"
+	command = NewCommand()
+	command.handleLine(line)
+
+	if !reflect.DeepEqual(expectedCommand, command) {
+		t.Errorf(msg, spec, expectedCommand, command)
+	}
+
+	spec = "Should convert a Echo command given a sh line"
+	expectedCommand = &Command{Sudo: false,
+		Tool:    "exec",
+		Cmd:     "whatever",
+		Pkgs:    []string{"command", "you", "want"},
+		Options: []string{},
+	}
+	line = "sh exec whatever command you want"
 	command = NewCommand()
 	command.handleLine(line)
 
