@@ -107,8 +107,8 @@ func (command *Command) handleLine(line string) {
 		return
 	}
 
-	if strings.HasPrefix(line, "//") {
-		command.Echo(strings.Trim(line, "/ "))
+	if strings.HasPrefix(line, "#") {
+		command.Echo(strings.Trim(line, "# "))
 		return
 	}
 

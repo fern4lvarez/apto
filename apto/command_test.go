@@ -155,7 +155,7 @@ func TestCommandHandleLine(t *testing.T) {
 		Pkgs:    []string{},
 		Options: []string{},
 	}
-	line := "// this is a comment"
+	line := "# this is a comment"
 	command := NewCommand()
 	command.handleLine(line)
 
