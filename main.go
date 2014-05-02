@@ -22,6 +22,12 @@ func main() {
 				log.Println(err)
 				return
 			}
+		case "uninstall":
+			err := apto.Uninstall(os.Args)
+			if err != nil {
+				log.Println(err)
+				return
+			}
 		case "file":
 			apto.File(os.Args)
 		default:

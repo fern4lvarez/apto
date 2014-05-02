@@ -6,6 +6,7 @@ package apto
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"strings"
@@ -56,19 +57,12 @@ func (command *Command) Execute() error {
 
 // Install creates a apt-get install command given packages and options
 func (command *Command) Install(pkgs []string, options []string) error {
-	if len(pkgs) == 0 {
-		return errors.New("No given pkgs to Install.")
-	}
+	return command.UnOrInstall(pkgs, options, "install")
+}
 
-	options = append(options, "-y")
-
-	command.Create(true,
-		"apt-get",
-		"install",
-		pkgs,
-		options)
-
-	return nil
+// Uninstall creates a apt-get remove command given packages and options
+func (command *Command) Uninstall(pkgs []string, options []string) error {
+	return command.UnOrInstall(pkgs, options, "remove")
 }
 
 // Shell creates a shell command given instructions
@@ -144,11 +138,30 @@ func (command *Command) handleLine(line string) {
 	switch cmd := args[0]; cmd {
 	case "install":
 		command.Install(args[1:], []string{})
+	case "uninstall":
+		command.Uninstall(args[1:], []string{})
 	case "sh":
 		command.Shell(args[1:])
 	default:
 		command = NewCommand()
 	}
+}
+
+// unOrInstall create an install or uninstall command given the method name
+func (command *Command) UnOrInstall(pkgs []string, options []string, method string) error {
+	if len(pkgs) == 0 {
+		return errors.New(fmt.Sprintf("No given pkgs to %s.", method))
+	}
+
+	options = append(options, "-y")
+
+	command.Create(true,
+		"apt-get",
+		method,
+		pkgs,
+		options)
+
+	return nil
 }
 
 // appendTo a given list of commands if command is empty

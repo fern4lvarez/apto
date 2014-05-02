@@ -107,9 +107,44 @@ func TestCommandInstall(t *testing.T) {
 func TestCommandInstallError(t *testing.T) {
 	spec := "Should return error when not given pkgs"
 	command := NewCommand()
-	expectedErr := errors.New("No given pkgs to Install.")
+	expectedErr := errors.New("No given pkgs to install.")
 
 	if err := command.Install(
+		[]string{},
+		[]string{}); err == nil {
+		t.Errorf(msg, spec)
+	} else if !reflect.DeepEqual(expectedErr, err) {
+		t.Errorf(msg, spec, expectedErr, err)
+	}
+}
+
+func TestCommandUninstall(t *testing.T) {
+	spec := "Should create Uninstall command given pkgs and options"
+	command := NewCommand()
+	expectedCommand := Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "remove",
+		Pkgs:    []string{"git-essentials"},
+		Options: []string{"-y"},
+	}
+
+	if err := command.Uninstall(
+		[]string{"git-essentials"},
+		[]string{}); err != nil {
+		t.Errorf(msg, spec, err, nil)
+	}
+
+	if !reflect.DeepEqual(expectedCommand, *command) {
+		t.Errorf(msg, spec, expectedCommand, *command)
+	}
+}
+
+func TestCommandUninstallError(t *testing.T) {
+	spec := "Should return error when not given pkgs"
+	command := NewCommand()
+	expectedErr := errors.New("No given pkgs to remove.")
+
+	if err := command.Uninstall(
 		[]string{},
 		[]string{}); err == nil {
 		t.Errorf(msg, spec)
@@ -221,7 +256,7 @@ func TestCommandHandleLine(t *testing.T) {
 		t.Errorf(msg, spec, expectedCommand, command)
 	}
 
-	spec = "Should convert a Install command given a install line"
+	spec = "Should convert an Install command given a install line"
 	expectedCommand = &Command{Sudo: true,
 		Tool:    "apt-get",
 		Cmd:     "install",
@@ -236,7 +271,22 @@ func TestCommandHandleLine(t *testing.T) {
 		t.Errorf(msg, spec, expectedCommand, command)
 	}
 
-	spec = "Should convert a Echo command given a sh line"
+	spec = "Should convert an Uninstall command given a uninstall line"
+	expectedCommand = &Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "remove",
+		Pkgs:    []string{"git-essentials"},
+		Options: []string{"-y"},
+	}
+	line = "uninstall git-essentials"
+	command = NewCommand()
+	command.handleLine(line)
+
+	if !reflect.DeepEqual(expectedCommand, command) {
+		t.Errorf(msg, spec, expectedCommand, command)
+	}
+
+	spec = "Should convert a Shell command given a sh line"
 	expectedCommand = &Command{Sudo: false,
 		Tool:    "exec",
 		Cmd:     "whatever",
