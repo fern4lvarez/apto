@@ -1,7 +1,7 @@
 package apto
 
 func Install(args []string) error {
-	command, err := unOrInstallCommand(args, "install")
+	command, err := unOrInstallCommand(args, "install", false)
 	if err != nil {
 		return err
 	}
@@ -9,8 +9,8 @@ func Install(args []string) error {
 	return command.Execute()
 }
 
-func Uninstall(args []string) error {
-	command, err := unOrInstallCommand(args, "uninstall")
+func Uninstall(args []string, force bool) error {
+	command, err := unOrInstallCommand(args, "uninstall", force)
 	if err != nil {
 		return err
 	}
@@ -18,7 +18,7 @@ func Uninstall(args []string) error {
 	return command.Execute()
 }
 
-func unOrInstallCommand(args []string, method string) (command *Command, err error) {
+func unOrInstallCommand(args []string, method string, force bool) (command *Command, err error) {
 	pkgs := args[1:]
 
 	command = NewCommand()
@@ -28,7 +28,7 @@ func unOrInstallCommand(args []string, method string) (command *Command, err err
 	}
 
 	if method == "uninstall" {
-		err = command.Uninstall(pkgs, []string{})
+		err = command.Uninstall(pkgs, []string{}, force)
 	}
 
 	if err != nil {

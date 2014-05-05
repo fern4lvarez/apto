@@ -61,8 +61,14 @@ func (command *Command) Install(pkgs []string, options []string) error {
 }
 
 // Uninstall creates a apt-get remove command given packages and options
-func (command *Command) Uninstall(pkgs []string, options []string) error {
-	return command.UnOrInstall(pkgs, options, "remove")
+func (command *Command) Uninstall(pkgs []string, options []string, force bool) error {
+	method := "remove"
+
+	if force {
+		method = "purge"
+	}
+
+	return command.UnOrInstall(pkgs, options, method)
 }
 
 // Shell creates a shell command given instructions
@@ -139,7 +145,7 @@ func (command *Command) handleLine(line string) {
 	case "install":
 		command.Install(args[1:], []string{})
 	case "uninstall":
-		command.Uninstall(args[1:], []string{})
+		command.Uninstall(args[1:], []string{}, false)
 	case "$":
 		command.Shell(args[1:])
 	default:

@@ -119,7 +119,7 @@ func TestCommandInstallError(t *testing.T) {
 }
 
 func TestCommandUninstall(t *testing.T) {
-	spec := "Should create Uninstall command given pkgs and options"
+	spec := "Should create an Uninstall command given pkgs and options"
 	command := NewCommand()
 	expectedCommand := Command{Sudo: true,
 		Tool:    "apt-get",
@@ -130,7 +130,28 @@ func TestCommandUninstall(t *testing.T) {
 
 	if err := command.Uninstall(
 		[]string{"git-essentials"},
-		[]string{}); err != nil {
+		[]string{},
+		false); err != nil {
+		t.Errorf(msg, spec, err, nil)
+	}
+
+	if !reflect.DeepEqual(expectedCommand, *command) {
+		t.Errorf(msg, spec, expectedCommand, *command)
+	}
+
+	spec = "Should create an forced Uninstall command given pkgs and options"
+	command = NewCommand()
+	expectedCommand = Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "purge",
+		Pkgs:    []string{"git-essentials"},
+		Options: []string{"-y"},
+	}
+
+	if err := command.Uninstall(
+		[]string{"git-essentials"},
+		[]string{},
+		true); err != nil {
 		t.Errorf(msg, spec, err, nil)
 	}
 
@@ -146,7 +167,8 @@ func TestCommandUninstallError(t *testing.T) {
 
 	if err := command.Uninstall(
 		[]string{},
-		[]string{}); err == nil {
+		[]string{},
+		false); err == nil {
 		t.Errorf(msg, spec)
 	} else if !reflect.DeepEqual(expectedErr, err) {
 		t.Errorf(msg, spec, expectedErr, err)
