@@ -286,14 +286,14 @@ func TestCommandHandleLine(t *testing.T) {
 		t.Errorf(msg, spec, expectedCommand, command)
 	}
 
-	spec = "Should convert a Shell command given a sh line"
+	spec = "Should convert a Shell command given a shell line"
 	expectedCommand = &Command{Sudo: false,
 		Tool:    "exec",
 		Cmd:     "whatever",
 		Pkgs:    []string{"command", "you", "want"},
 		Options: []string{},
 	}
-	line = "sh exec whatever command you want"
+	line = "$ exec whatever command you want"
 	command = NewCommand()
 	command.handleLine(line)
 

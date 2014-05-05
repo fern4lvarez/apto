@@ -140,7 +140,7 @@ func (command *Command) handleLine(line string) {
 		command.Install(args[1:], []string{})
 	case "uninstall":
 		command.Uninstall(args[1:], []string{})
-	case "sh":
+	case "$":
 		command.Shell(args[1:])
 	default:
 		command = NewCommand()
