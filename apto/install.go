@@ -19,7 +19,7 @@ func Uninstall(args []string) error {
 }
 
 func unOrInstallCommand(args []string, method string) (command *Command, err error) {
-	pkgs := args[2:]
+	pkgs := args[1:]
 
 	command = NewCommand()
 

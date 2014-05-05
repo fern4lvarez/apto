@@ -9,7 +9,7 @@ import (
 // possible to run apt-get install as su on remote hosts
 func IgnoreTestInstall(t *testing.T) {
 	spec := "Should return nil when Install happens given correct args"
-	args := []string{"apto", "install", "apt"}
+	args := []string{"install", "apt"}
 
 	if err := Install(args); err != nil {
 		t.Errorf(msg, spec, nil, err)
@@ -18,7 +18,7 @@ func IgnoreTestInstall(t *testing.T) {
 
 func TestInstallError(t *testing.T) {
 	spec := "Should return error when Install happens given wrong arguments"
-	args := []string{"apto", "install"}
+	args := []string{"install"}
 
 	if err := Install(args); err == nil {
 		t.Errorf(msg, spec, err, nil)
@@ -29,7 +29,7 @@ func TestInstallError(t *testing.T) {
 // possible to run apt-get install as su on remote hosts
 func IgnoreTestUninstall(t *testing.T) {
 	spec := "Should return nil when Install happens given correct args"
-	args := []string{"apto", "uninstall", "apt"}
+	args := []string{"uninstall", "apt"}
 
 	if err := Uninstall(args); err != nil {
 		t.Errorf(msg, spec, nil, err)
@@ -38,7 +38,7 @@ func IgnoreTestUninstall(t *testing.T) {
 
 func TestUninstallError(t *testing.T) {
 	spec := "Should return error when Install happens given wrong arguments"
-	args := []string{"apto", "uninstall"}
+	args := []string{"uninstall"}
 
 	if err := Uninstall(args); err == nil {
 		t.Errorf(msg, spec, err, nil)
@@ -47,7 +47,7 @@ func TestUninstallError(t *testing.T) {
 
 func TestUnOrInstallCommand(t *testing.T) {
 	spec := "Should return a new Command based on the arguments with no options"
-	args := []string{"apto", "install", "vim", "git-essentials"}
+	args := []string{"install", "vim", "git-essentials"}
 	expectedCommand := "sudo apt-get install vim git-essentials -y"
 
 	if command, err := unOrInstallCommand(args, "install"); err != nil {
@@ -59,7 +59,7 @@ func TestUnOrInstallCommand(t *testing.T) {
 
 func TestInstallCommandError(t *testing.T) {
 	spec := "Should return an Error when no packages are given"
-	args := []string{"apto", "install"}
+	args := []string{"install"}
 	expectedErr := errors.New("No given pkgs to Install.")
 
 	if _, err := unOrInstallCommand(args, "install"); err == nil {
