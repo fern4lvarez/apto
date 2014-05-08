@@ -175,6 +175,23 @@ func TestCommandUninstallError(t *testing.T) {
 	}
 }
 
+func TestCommandUpdate(t *testing.T) {
+	spec := "Should create an Update command"
+	command := NewCommand()
+	expectedCommand := Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "update",
+		Pkgs:    []string{},
+		Options: []string{},
+	}
+
+	command.Update()
+
+	if !reflect.DeepEqual(expectedCommand, *command) {
+		t.Errorf(msg, spec, expectedCommand, *command)
+	}
+}
+
 func TestCommandShell(t *testing.T) {
 	spec := "Should create shell command given instructions"
 	instructions := []string{"bundle", "install", "--verbose"}
@@ -323,6 +340,20 @@ func TestCommandHandleLine(t *testing.T) {
 		t.Errorf(msg, spec, expectedCommand, command)
 	}
 
+	spec = "Should convert an Update command given an update line"
+	expectedCommand = &Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "update",
+		Pkgs:    []string{},
+		Options: []string{},
+	}
+	line = "update"
+	command = NewCommand()
+	command.handleLine(line)
+
+	if !reflect.DeepEqual(expectedCommand, command) {
+		t.Errorf(msg, spec, expectedCommand, command)
+	}
 	spec = "Should convert a Shell command given a shell line"
 	expectedCommand = &Command{Sudo: false,
 		Tool:    "exec",
