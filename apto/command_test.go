@@ -192,6 +192,23 @@ func TestCommandUpdate(t *testing.T) {
 	}
 }
 
+func TestCommandUpgrade(t *testing.T) {
+	spec := "Should create an upgrade command"
+	command := NewCommand()
+	expectedCommand := Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "dist-upgrade",
+		Pkgs:    []string{},
+		Options: []string{"-y"},
+	}
+
+	command.Upgrade()
+
+	if !reflect.DeepEqual(expectedCommand, *command) {
+		t.Errorf(msg, spec, expectedCommand, *command)
+	}
+}
+
 func TestCommandShell(t *testing.T) {
 	spec := "Should create shell command given instructions"
 	instructions := []string{"bundle", "install", "--verbose"}
@@ -351,9 +368,20 @@ func TestCommandHandleLine(t *testing.T) {
 	command = NewCommand()
 	command.handleLine(line)
 
+	spec = "Should convert an Upgrade command given an upgrade line"
+	expectedCommand = &Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "dist-upgrade",
+		Pkgs:    []string{},
+		Options: []string{"-y"},
+	}
+	line = "upgrade"
+	command = NewCommand()
+	command.handleLine(line)
 	if !reflect.DeepEqual(expectedCommand, command) {
 		t.Errorf(msg, spec, expectedCommand, command)
 	}
+
 	spec = "Should convert a Shell command given a shell line"
 	expectedCommand = &Command{Sudo: false,
 		Tool:    "exec",

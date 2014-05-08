@@ -7,7 +7,7 @@ import (
 
 // TestInstall is ignored when running CI since it is not
 // possible to run apt-get install as su on remote hosts
-func IgnoreTestInstall(t *testing.T) {
+func TestInstall(t *testing.T) {
 	spec := "Should return nil when Install happens given correct args"
 	args := []string{"install", "apt"}
 

@@ -80,6 +80,15 @@ func (command *Command) Update() {
 		[]string{})
 }
 
+// Upgrade creates a dist-upgrade command
+func (command *Command) Upgrade() {
+	command.Create(true,
+		"apt-get",
+		"dist-upgrade",
+		[]string{},
+		[]string{"-y"})
+}
+
 // Shell creates a shell command given instructions
 func (command *Command) Shell(instructions []string) error {
 	if len(instructions) == 0 {
@@ -158,6 +167,8 @@ func (command *Command) handleLine(line string) {
 		command.Uninstall(args[1:], []string{}, force)
 	case "update":
 		command.Update()
+	case "upgrade":
+		command.Upgrade()
 	case "$":
 		command.Shell(args[1:])
 	default:

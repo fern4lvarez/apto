@@ -42,6 +42,16 @@ func main() {
 				log.Println(err)
 				return
 			}
+		case "upgrade":
+			if len(flag.Args()) > 1 {
+				log.Println("No parameters accepted for upgrade command")
+				return
+			}
+			err := apto.Upgrade()
+			if err != nil {
+				log.Println(err)
+				return
+			}
 		case "file":
 			apto.File(flag.Args())
 		default:
