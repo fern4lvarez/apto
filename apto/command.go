@@ -140,12 +140,13 @@ func (command *Command) handleLine(line string) {
 	}
 
 	args := strings.Split(line, " ")
+	args, force := HandleFlag(args, "-f")
 
 	switch cmd := args[0]; cmd {
 	case "install":
 		command.Install(args[1:], []string{})
 	case "uninstall":
-		command.Uninstall(args[1:], []string{}, false)
+		command.Uninstall(args[1:], []string{}, force)
 	case "$":
 		command.Shell(args[1:])
 	default:

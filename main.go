@@ -26,7 +26,8 @@ func main() {
 				return
 			}
 		case "uninstall":
-			err := apto.Uninstall(flag.Args(), *force)
+			args, force_ := apto.HandleFlag(flag.Args(), "-f")
+			err := apto.Uninstall(args, *force || force_)
 			if err != nil {
 				log.Println(err)
 				return

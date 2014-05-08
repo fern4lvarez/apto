@@ -308,6 +308,21 @@ func TestCommandHandleLine(t *testing.T) {
 		t.Errorf(msg, spec, expectedCommand, command)
 	}
 
+	spec = "Should convert a forced Uninstall command given a uninstall line with force flag"
+	expectedCommand = &Command{Sudo: true,
+		Tool:    "apt-get",
+		Cmd:     "purge",
+		Pkgs:    []string{"git-essentials"},
+		Options: []string{"-y"},
+	}
+	line = "uninstall -f git-essentials"
+	command = NewCommand()
+	command.handleLine(line)
+
+	if !reflect.DeepEqual(expectedCommand, command) {
+		t.Errorf(msg, spec, expectedCommand, command)
+	}
+
 	spec = "Should convert a Shell command given a shell line"
 	expectedCommand = &Command{Sudo: false,
 		Tool:    "exec",
