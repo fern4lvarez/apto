@@ -131,17 +131,3 @@ func TestAptofileReadError(t *testing.T) {
 		t.Errorf(msg, spec, expectedErr, err)
 	}
 }
-
-func TestAptofileExecute(t *testing.T) {
-	spec := `Should execute Aptofile`
-
-	af := []byte("install vim\ninstall gnomine\n")
-	ioutil.WriteFile("Aptofile", af, 0644)
-	defer os.Remove("Aptofile")
-	aptofile, _ := NewAptofile(current_dir)
-	aptofile.Read()
-
-	if err := aptofile.Execute(); err != nil {
-		t.Errorf(msg, spec, nil, err)
-	}
-}
