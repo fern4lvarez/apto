@@ -57,7 +57,7 @@ func TestCommandCreateError(t *testing.T) {
 	}
 }
 
-func IgnoreTestExecute(t *testing.T) {
+func TestCommandExecute(t *testing.T) {
 	spec := "Should execute not sudo bash command and return output"
 	command := &Command{Sudo: false,
 		Tool:    "apt-get",
@@ -70,7 +70,7 @@ func IgnoreTestExecute(t *testing.T) {
 	}
 }
 
-func TestExecuteError(t *testing.T) {
+func TestCommandExecuteError(t *testing.T) {
 	spec := "Should return error when executing a wrong bash command"
 	command := &Command{Sudo: false,
 		Tool:    "notexists",

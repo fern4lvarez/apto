@@ -2,6 +2,8 @@ package apto
 
 import (
 	"fmt"
+	"os"
+	"os/exec"
 )
 
 // Debug prints with a custom format
@@ -29,4 +31,13 @@ func HandleFlag(args []string, flag string) ([]string, bool) {
 	}
 
 	return args, exists
+}
+
+// Execute executes a regular command splitted in strings
+func Execute(command []string) error {
+	cmd := exec.Command(command[0], command[1:]...)
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }

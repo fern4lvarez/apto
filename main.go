@@ -6,6 +6,7 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
 
 	"github.com/fern4lvarez/apto/apto"
 )
@@ -23,34 +24,34 @@ func main() {
 			err := apto.Install(flag.Args())
 			if err != nil {
 				log.Println(err)
-				return
+				os.Exit(1)
 			}
 		case "uninstall":
 			args, force_ := apto.HandleFlag(flag.Args(), "-f")
 			err := apto.Uninstall(args, *force || force_)
 			if err != nil {
 				log.Println(err)
-				return
+				os.Exit(1)
 			}
 		case "update":
 			if len(flag.Args()) > 1 {
 				log.Println("No parameters accepted for update command")
-				return
+				os.Exit(1)
 			}
 			err := apto.Update()
 			if err != nil {
 				log.Println(err)
-				return
+				os.Exit(1)
 			}
 		case "upgrade":
 			if len(flag.Args()) > 1 {
 				log.Println("No parameters accepted for upgrade command")
-				return
+				os.Exit(1)
 			}
 			err := apto.Upgrade()
 			if err != nil {
 				log.Println(err)
-				return
+				os.Exit(1)
 			}
 		case "file":
 			apto.File(flag.Args())

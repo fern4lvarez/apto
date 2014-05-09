@@ -8,6 +8,16 @@ import (
 	"testing"
 )
 
+func TestExecute(t *testing.T) {
+	spec := "Should return nil when executing a command"
+	command := []string{"echo", "hello"}
+
+	if err := Execute(command); err != nil {
+		t.Errorf(msg, spec, nil, err)
+	}
+
+}
+
 func TestInstall(t *testing.T) {
 	spec := "Should return nil when Install happens given correct args"
 	args := []string{"install", "gnomine"}
@@ -61,6 +71,18 @@ func TestAptofileExecute(t *testing.T) {
 	aptofile.Read()
 
 	if err := aptofile.Execute(); err != nil {
+		t.Errorf(msg, spec, nil, err)
+	}
+}
+
+func TestAprofileFile(t *testing.T) {
+	spec := "Should read and execute Aptofile from current path"
+
+	af := []byte("upgrade\ninstall vim\ninstall gnomine\nremove -f gnomine\n")
+	ioutil.WriteFile("Aptofile", af, 0644)
+	defer os.Remove("Aptofile")
+
+	if err := File([]string{}); err != nil {
 		t.Errorf(msg, spec, nil, err)
 	}
 }
