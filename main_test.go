@@ -89,3 +89,12 @@ func TestUpgrade(t *testing.T) {
 		t.Errorf(spec)
 	}
 }
+
+func TestFile(t *testing.T) {
+	spec := "Should execute `apto file`"
+	command := []string{"apto", "file"}
+
+	if err := apto.Execute(command); err != nil {
+		t.Errorf(msg, spec, nil, err)
+	}
+}

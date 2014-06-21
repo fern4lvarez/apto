@@ -75,7 +75,7 @@ func TestAptofileExecute(t *testing.T) {
 	}
 }
 
-func TestAprofileFile(t *testing.T) {
+func TestAptofileFile(t *testing.T) {
 	spec := "Should read and execute Aptofile from current path"
 
 	af := []byte("upgrade\ninstall vim\ninstall gnomine\nremove -f gnomine\n")
