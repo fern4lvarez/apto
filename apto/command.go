@@ -89,6 +89,17 @@ func (command *Command) Upgrade() {
 		[]string{"-y"})
 }
 
+// File reads and executes an aptofile
+func File(args []string) error {
+	aptofile, _ := NewAptofile("")
+	if err := aptofile.Read(); err != nil {
+		return err
+	}
+
+	aptofile.Execute()
+	return nil
+}
+
 // Shell creates a shell command given instructions
 func (command *Command) Shell(instructions []string) error {
 	if len(instructions) == 0 {

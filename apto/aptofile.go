@@ -78,14 +78,3 @@ func (aptofile *Aptofile) Execute() error {
 
 	return nil
 }
-
-// File reads and executes an aptofile
-func File(args []string) error {
-	aptofile, _ := NewAptofile("")
-	if err := aptofile.Read(); err != nil {
-		return err
-	}
-
-	aptofile.Execute()
-	return nil
-}
